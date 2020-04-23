@@ -1,8 +1,10 @@
 package com.accesodatos.AD04;
 
 import com.accesodatos.AD04.entities.Employee;
+import com.accesodatos.AD04.entities.Store;
 import com.accesodatos.AD04.utilities.DB;
 import java.util.ArrayList;
+import java.util.List;
 import javax.swing.DefaultListModel;
 
 /*
@@ -19,6 +21,8 @@ public class EmployeeStoresDialog extends javax.swing.JDialog {
     DefaultListModel listModel;
 
     int nStores = 0;
+    
+    List<Store> storesEmployee;
 
     /**
      * Creates new form CustomersDialog
@@ -37,7 +41,16 @@ public class EmployeeStoresDialog extends javax.swing.JDialog {
         listModel = new DefaultListModel();
         listTitulares.setModel(listModel);
 
-        addElements(DB.getStoresEmployee(selectedEmployee));
+        storesEmployee = DB.getStoresEmployee(selectedEmployee);
+        
+        ArrayList<String> storesEmployeeArrayList = new ArrayList<>();
+        
+        storesEmployee.forEach((storeEmployee) -> {
+            storesEmployeeArrayList.add(storeEmployee.toString() + 
+                    " -> " + DB.getEmployeeStore(selectedEmployee, storeEmployee).getHours() + " horas semanales.");
+        });
+        
+        addElements(storesEmployeeArrayList);
 
         
         if (listModel.isEmpty()) {

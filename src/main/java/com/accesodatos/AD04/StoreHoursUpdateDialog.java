@@ -1,14 +1,10 @@
 package com.accesodatos.AD04;
 
+import com.accesodatos.AD04.entities.Employee;
+import com.accesodatos.AD04.entities.EmployeeStore;
+import com.accesodatos.AD04.entities.Store;
 import com.accesodatos.AD04.utilities.DB;
 import com.accesodatos.AD04.utilities.ValidarCampos;
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
-import java.util.ArrayList;
-import javax.swing.ComboBoxModel;
-import javax.swing.DefaultListModel;
 
 /*
  * To change this license header, choose License Headers in Project Properties.
@@ -23,12 +19,9 @@ public class StoreHoursUpdateDialog extends javax.swing.JDialog {
 
     int nEmployees = 0;
 
-    Connection con = null;
-    String db = "xestionAppDB.db";
-
-    int idSelectedStore = 0;
+    Store selectedStore;
     
-    int idSelectedEmployee = 0;
+    Employee selectedEmployee;
 
     /**
      * Creates new form NewCustomerDialog
@@ -45,15 +38,15 @@ public class StoreHoursUpdateDialog extends javax.swing.JDialog {
 //        DB.desconnetDatabase(con);
     }
 
-    public StoreHoursUpdateDialog(java.awt.Frame parent, boolean modal, int idSelectedStore, int idSelectedEmployee, String nameSelectedEmployeeString) {
+    public StoreHoursUpdateDialog(java.awt.Frame parent, boolean modal, Store selectedStore, Employee selectedEmployee) {
         super(parent, modal);
         initComponents();
         this.setLocationRelativeTo(parent);
 
-        this.idSelectedStore = idSelectedStore;
-        this.idSelectedEmployee = idSelectedEmployee;
+        this.selectedStore = selectedStore;
+        this.selectedEmployee = selectedEmployee;
         
-        lbNameEmployee.setText(nameSelectedEmployeeString);
+        lbNameEmployee.setText(selectedEmployee.getName() + " " + selectedEmployee.getSurname());
 
     }
 
@@ -167,7 +160,6 @@ public class StoreHoursUpdateDialog extends javax.swing.JDialog {
         // TODO add your handling code here:
         String hoursString = txtFHours.getText();
         
-
         if (hoursString.isEmpty()){
             lbError.setText("Rellena el campo horas semanales");
         } else {
@@ -176,11 +168,7 @@ public class StoreHoursUpdateDialog extends javax.swing.JDialog {
             } else {
                 int hours = Integer.valueOf(hoursString);
 
-                con = DB.connectDatabase(db);
-
-                DB.updateHoursEmployee_Store(con, hours, idSelectedStore, idSelectedEmployee);
-
-                DB.desconnetDatabase(con);
+                DB.transactionUpdateDB(new EmployeeStore(selectedStore, selectedEmployee, hours));
                 
                 dispose();
             }

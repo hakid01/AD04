@@ -1,0 +1,58 @@
+[
+  {
+    "storeId": 7,
+    "storeName": "tienda prueba",
+    "province": "Huelva",
+    "itemsStock": [
+      {
+        "itemId": 11,
+        "itemName": "banqueta",
+        "stock": 12
+      },
+      {
+        "itemId": 25,
+        "itemName": "cama",
+        "stock": 53
+      }
+    ]
+  },
+  {
+    "storeId": 16,
+    "storeName": "Tienda Maña",
+    "province": "Zaragoza",
+    "itemsStock": [
+      {
+        "itemId": 11,
+        "itemName": "banqueta",
+        "stock": 68
+      },
+      {
+        "itemId": 27,
+        "itemName": "mesa de luz",
+        "stock": 83
+      }
+    ]
+  },
+  {
+    "storeId": 21,
+    "storeName": "Otra Tienda mas",
+    "province": "Valencia/València",
+    "itemsStock": [
+      {
+        "itemId": 18,
+        "itemName": "silla",
+        "stock": 32
+      },
+      {
+        "itemId": 25,
+        "itemName": "cama",
+        "stock": 85
+      },
+      {
+        "itemId": 27,
+        "itemName": "mesa de luz",
+        "stock": 15
+      }
+    ]
+  }
+]

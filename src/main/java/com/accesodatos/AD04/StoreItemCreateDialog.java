@@ -6,6 +6,7 @@ import com.accesodatos.AD04.entities.Store;
 import com.accesodatos.AD04.utilities.DB;
 import com.accesodatos.AD04.utilities.ValidarCampos;
 import java.util.ArrayList;
+import java.util.List;
 
 /*
  * To change this license header, choose License Headers in Project Properties.
@@ -22,8 +23,8 @@ public class StoreItemCreateDialog extends javax.swing.JDialog {
 
     Store selectedStore;
 
-    ArrayList<String> itemsStore = new ArrayList<>();
-    ArrayList<String> items = new ArrayList<>();
+    List<Item> itemsStore;
+    List<Item> items;
 
     /**
      * Creates new form NewCustomerDialog
@@ -41,7 +42,13 @@ public class StoreItemCreateDialog extends javax.swing.JDialog {
         this.selectedStore = selectedStore;
 
         items = DB.getItems();
-        addElements(items);
+
+        ArrayList<String> itemsArrayList = new ArrayList<>();
+
+        items.forEach((item) -> {
+            itemsArrayList.add(item.toString());
+        });
+        addElements(itemsArrayList);
 
         if (items.isEmpty()) {
             lbError.setText("Necesario añadir algún producto a la franquicia.");
@@ -150,15 +157,8 @@ public class StoreItemCreateDialog extends javax.swing.JDialog {
 
     private void addElements(ArrayList<String> items) {
         nItems = items.size();
-        //Pasar arraylist a array
-        String[] itemsArray = new String[nItems];
-        itemsArray = items.toArray(itemsArray);
-
-        for (int i = 0; i < nItems; i++) {
-            String[] itemDisplay = itemsArray[i].split("\\.");
-            String finalString = itemDisplay[0] + "." + itemDisplay[1];
-            System.out.println("itemDisplay: " + finalString);
-            comboItems.addItem(finalString);
+        for (String item : items) {
+            comboItems.addItem(item);
         }
     }
 
@@ -172,7 +172,6 @@ public class StoreItemCreateDialog extends javax.swing.JDialog {
         int item_id = 0;
         int indexItem = comboItems.getSelectedIndex();
 
-//        System.out.println("item id: " + item_id + " itemString: " + itemString + " stock: " + stockString);
         if (items.isEmpty()) {
             lbError.setText("No hay ningún producto disponible, añadir producto a la franquicia.");
         } else if (stockString.isEmpty()) {
@@ -188,13 +187,13 @@ public class StoreItemCreateDialog extends javax.swing.JDialog {
             item_id = Integer.valueOf(item_idString);
             Item selectedItem = DB.getItem(item_id);
 
-            if (itemsStore.contains(selectedItem.toString())) {
-                lbError.setText("El producto ya está añadido a la tienda. Utiliza \"Actualizar stock\"");
+            if (itemsStore.contains(selectedItem)) {
+                lbError.setText("El producto ya está añadido a la tienda. Utilice \"Actualizar stock\"");
             } else {
 
                 int stock = Integer.valueOf(stockString);
 
-                  DB.transactionAddToDB(new ItemStore(selectedStore, selectedItem, stock));
+                DB.transactionAddToDB(new ItemStore(selectedStore, selectedItem, stock));
 
                 dispose();
             }

@@ -1,8 +1,11 @@
 package com.accesodatos.AD04;
 
+import com.accesodatos.AD04.entities.Employee;
+import com.accesodatos.AD04.entities.EmployeeStore;
 import com.accesodatos.AD04.entities.Store;
 import com.accesodatos.AD04.utilities.DB;
 import java.util.ArrayList;
+import java.util.List;
 import javax.swing.DefaultListModel;
 import javax.swing.JOptionPane;
 
@@ -22,6 +25,9 @@ public class StoreManageEmployeesDialog extends javax.swing.JDialog {
     int nEmployees = 0;
 
     Store selectedStore;
+    Employee selectedEmployee;
+    
+    List<Employee> employees;
 
     /**
      * Creates new form CustomersDialog
@@ -50,7 +56,17 @@ public class StoreManageEmployeesDialog extends javax.swing.JDialog {
 
     public void reloadList() {
         removeElements();
-        addElements(DB.getEmployeesStore(selectedStore));
+        employees= DB.getEmployeesStore(selectedStore);
+        
+        ArrayList<String> employeesWithHours = new ArrayList<>();
+        
+        employees.forEach((employee) -> {
+            String tempEWH = employee.toString() + ". Horas semanales: " + 
+                    DB.getEmployeeStore(employee, selectedStore).getHours();
+            employeesWithHours.add(tempEWH);
+        });
+        
+        addElements(employeesWithHours);
     }
 
     private void addElements(ArrayList<String> employees) {
@@ -71,38 +87,41 @@ public class StoreManageEmployeesDialog extends javax.swing.JDialog {
     }
 
     private void removeSelectedElement() {
-        String selectedEmployee = listEmployeesStore.getSelectedValue();
-        if (selectedEmployee == null) {
+        String selectedEmployeeString = listEmployeesStore.getSelectedValue();
+        if (selectedEmployeeString == null) {
             lbError.setText("Selecciona el producto a eliminar.");
         } else {
-            String[] dataSplit = selectedEmployee.split(" - ");
-            System.out.println("Vamos a eliminar el producto " + selectedEmployee);
+            String[] dataSplit = selectedEmployeeString.split(" - ");
+            System.out.println("Vamos a eliminar el producto " + selectedEmployeeString);
 
             int respuesta = JOptionPane.showConfirmDialog(null, "Quiere eliminar el empleado \""
                     + dataSplit[1] + "\" de esta tienda?");
             if (respuesta == 0) {
 
                 int idSelectedEmployee = Integer.valueOf(dataSplit[0]);
+                
+                selectedEmployee= DB.getEmployee(idSelectedEmployee);
+                
+                EmployeeStore selectedEmployeeStore = DB.getEmployeeStore(selectedEmployee,selectedStore);
+                
+                DB.transactionDeleteOfDB(selectedEmployeeStore);
 
-                con = DB.connectDatabase(db);
-                DB.deleteEmployeeStore(con, idSelectedStore, idSelectedEmployee);
-                DB.desconnetDatabase(con);
             }
         }
     }
 
-    // *********** MODIFICAR **********+
     private void updateHours() {
-        String selectedEmployee = listEmployeesStore.getSelectedValue();
-        if (selectedEmployee == null) {
+        String selectedEmployeeString = listEmployeesStore.getSelectedValue();
+        if (selectedEmployeeString == null) {
             lbError.setText("Selecciona un empleado.");
         } else {
-            String[] dataSplit = selectedEmployee.split(" - ");
+            String[] dataSplit = selectedEmployeeString.split(" - ");
 
-            String nameSelectedEmployee = dataSplit[1];
             int idSelectedEmployee = Integer.valueOf(dataSplit[0]);
+            
+            selectedEmployee = DB.getEmployee(idSelectedEmployee);
 
-            StoreHoursUpdateDialog shud = new StoreHoursUpdateDialog(null, true, idSelectedStore, idSelectedEmployee, nameSelectedEmployee);
+            StoreHoursUpdateDialog shud = new StoreHoursUpdateDialog(null, true, selectedStore, selectedEmployee);
             shud.setVisible(true);
 
         }

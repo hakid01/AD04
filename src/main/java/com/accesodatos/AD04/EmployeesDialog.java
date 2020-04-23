@@ -3,6 +3,7 @@ package com.accesodatos.AD04;
 import com.accesodatos.AD04.entities.Employee;
 import com.accesodatos.AD04.utilities.DB;
 import java.util.ArrayList;
+import java.util.List;
 import javax.swing.DefaultListModel;
 import javax.swing.JOptionPane;
 
@@ -22,6 +23,8 @@ public class EmployeesDialog extends javax.swing.JDialog {
     int nEmployees = 0;
 
     int idSelectedEmployee = 0;
+    
+    List<Employee> employees;
 
     /**
      * Creates new form CustomersDialog
@@ -43,7 +46,15 @@ public class EmployeesDialog extends javax.swing.JDialog {
 
     private void reloadList() {
         removeElements();
-        addElements(DB.getEmployees());
+        employees= DB.getEmployees();
+        
+        ArrayList<String> employeesArrayList = new ArrayList<>();
+        
+        employees.forEach((employee) -> {
+            employeesArrayList.add(employee.toString());
+        });
+        
+        addElements(employeesArrayList);
     }
 
     private void addElements(ArrayList<String> employees) {

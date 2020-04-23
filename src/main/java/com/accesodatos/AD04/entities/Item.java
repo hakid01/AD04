@@ -75,7 +75,7 @@ public class Item implements Serializable {
 
     @Override
     public String toString() {
-        return "" + item_id + " - " + name + " -> " + price + "€. " + description;
+        return "" + item_id + " - " + name + " -> " + price + "€.";
     }
 
     @Override

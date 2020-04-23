@@ -1,14 +1,10 @@
 package com.accesodatos.AD04;
 
+import com.accesodatos.AD04.entities.Item;
+import com.accesodatos.AD04.entities.ItemStore;
+import com.accesodatos.AD04.entities.Store;
 import com.accesodatos.AD04.utilities.DB;
 import com.accesodatos.AD04.utilities.ValidarCampos;
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
-import java.util.ArrayList;
-import javax.swing.ComboBoxModel;
-import javax.swing.DefaultListModel;
 
 /*
  * To change this license header, choose License Headers in Project Properties.
@@ -23,12 +19,9 @@ public class StoreStockUpdateDialog extends javax.swing.JDialog {
 
     int nItems = 0;
 
-    Connection con = null;
-    String db = "xestionAppDB.db";
-
-    int idSelectedStore = 0;
+    Store selectedStore;
     
-    int idSelectedItem = 0;
+    Item selectedItem;
 
     /**
      * Creates new form NewCustomerDialog
@@ -45,15 +38,15 @@ public class StoreStockUpdateDialog extends javax.swing.JDialog {
 //        DB.desconnetDatabase(con);
     }
 
-    public StoreStockUpdateDialog(java.awt.Frame parent, boolean modal, int idSelectedStore, int idSelectedItem, String nameSelectedItem) {
+    public StoreStockUpdateDialog(java.awt.Frame parent, boolean modal, Store selectedStore, Item selectedItem) {
         super(parent, modal);
         initComponents();
         this.setLocationRelativeTo(parent);
 
-        this.idSelectedStore = idSelectedStore;
-        this.idSelectedItem = idSelectedItem;
+        this.selectedStore = selectedStore;
+        this.selectedItem = selectedItem;
         
-        lbNameItem.setText(nameSelectedItem);
+        lbNameItem.setText(selectedItem.getName());
 
     }
 
@@ -177,11 +170,7 @@ public class StoreStockUpdateDialog extends javax.swing.JDialog {
             } else {
                 int stock = Integer.valueOf(stockString);
 
-                con = DB.connectDatabase(db);
-
-                DB.updateStockItem_Store(con, stock, idSelectedStore, idSelectedItem);
-
-                DB.desconnetDatabase(con);
+                DB.transactionUpdateDB(new ItemStore(selectedStore, selectedItem, stock));
                 
                 dispose();
             }

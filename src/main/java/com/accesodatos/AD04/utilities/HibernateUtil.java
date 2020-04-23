@@ -27,11 +27,23 @@ import org.hibernate.service.ServiceRegistry;
  */
 public class HibernateUtil {
 
+    private static String address;
+    private static String password;
+    private static String port;
+    private static String name;
+    private static String user;
+
+    private static String dialect;
+    private static String driver;
+    private static String hbm2ddl_auto;
+    private static String show_sql;
+
     private static SessionFactory sessionFactory;
 
     //Este método devolve a sesión para poder facer operacións coa base de datos
     public static SessionFactory getSessionFactory() {
 
+        loadConfig();
         //Se a sesion non se configurou, creamolo
         if (sessionFactory == null) {
             try {
@@ -41,23 +53,23 @@ public class HibernateUtil {
                 Properties settings = new Properties();
 
                 //Indicamos o conector da base de datos que vamos a usar
-                settings.put(Environment.DRIVER, "com.mysql.cj.jdbc.Driver");
+                settings.put(Environment.DRIVER, driver);
 
                 //Indicamos a localización da base de datos que vamos a utilizar
-                settings.put(Environment.URL, "jdbc:mysql://192.168.56.101:3306/hibernate?serverTimezone="+TimeZone.getDefault().getID());
+                settings.put(Environment.URL, createURLDB(address, port, name));
 
                 //Indicamos o usuario da base de datos con cal nos vamos conectar e o seu contrasinal
-                settings.put(Environment.USER, "userhibernate");
-                settings.put(Environment.PASS, "abc123.");
+                settings.put(Environment.USER, user);
+                settings.put(Environment.PASS, password);
 
                 //Indicamos o dialecto que ten que usar Hibernate 
-                settings.put(Environment.DIALECT, "org.hibernate.dialect.MySQL5Dialect");
+                settings.put(Environment.DIALECT, dialect);
 
                 //Indicamos que se as táboas todas se borren e se volvan crear
-                settings.put(Environment.HBM2DDL_AUTO, "update");
+                settings.put(Environment.HBM2DDL_AUTO, hbm2ddl_auto);
 
                 //Indicamos que se mostre as operacións SQL que Hibernate leva a cabo
-                settings.put(Environment.SHOW_SQL, "true");
+                settings.put(Environment.SHOW_SQL, show_sql);
                 conf.setProperties(settings);
 
                 //Engaidmos aquelas clases nas que queremos facer persistencia
@@ -68,7 +80,7 @@ public class HibernateUtil {
                 conf.addAnnotatedClass(Employee.class);
                 conf.addAnnotatedClass(ItemStore.class);
                 conf.addAnnotatedClass(EmployeeStore.class);
-                
+
                 ServiceRegistry serviceRegistry = new StandardServiceRegistryBuilder().applySettings(conf.getProperties()).build();
                 sessionFactory = conf.buildSessionFactory(serviceRegistry);
             } catch (HibernateException e) {
@@ -76,6 +88,29 @@ public class HibernateUtil {
             }
         }
         return sessionFactory;
+    }
+
+    private static void loadConfig() {
+        ManageJson mj = new ManageJson();
+
+        Config c = (Config) mj.jsonToObj("/config.json", Config.class);
+
+        address = c.getDbConnection().getAddress();
+        name = c.getDbConnection().getName();
+        password = c.getDbConnection().getPassword();
+        port = c.getDbConnection().getPort();
+        user = c.getDbConnection().getUser();
+
+        dialect = c.getHibernate().getDialect();
+        driver = c.getHibernate().getDriver();
+        hbm2ddl_auto = c.getHibernate().getHBM2DDL_AUTO();
+        show_sql = c.getHibernate().getSHOW_SQL();
+    }
+
+    private static String createURLDB(String address, String port, String name) {
+        String url = "jdbc:mysql://" + address + ":" + port + "/" + name
+                + "?serverTimezone=" + TimeZone.getDefault().getID();
+        return url;
     }
 
 }

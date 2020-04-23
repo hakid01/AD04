@@ -6,6 +6,7 @@ import com.accesodatos.AD04.entities.Store;
 import com.accesodatos.AD04.utilities.DB;
 import com.accesodatos.AD04.utilities.ValidarCampos;
 import java.util.ArrayList;
+import java.util.List;
 
 /*
  * To change this license header, choose License Headers in Project Properties.
@@ -22,8 +23,8 @@ public class StoreEmployeeCreateDialog extends javax.swing.JDialog {
 
     Store selectedStore;
 
-    ArrayList<String> employeesStore = new ArrayList<>();
-    ArrayList<String> employees = new ArrayList<>();
+    List<Employee> employeesStore;
+    List<Employee> employees;
 
     /**
      * Creates new form NewCustomerDialog
@@ -41,7 +42,13 @@ public class StoreEmployeeCreateDialog extends javax.swing.JDialog {
         this.selectedStore = selectedStore;
 
         employees = DB.getEmployees();
-        addElements(employees);
+
+        ArrayList<String> employeesArrayList = new ArrayList<>();
+
+        employees.forEach((employee) -> {
+            employeesArrayList.add(employee.toString());
+        });
+        addElements(employeesArrayList);
 
         if (employees.isEmpty()) {
             lbError.setText("Necesario añadir algún empleado a la franquicia.");
@@ -157,7 +164,7 @@ public class StoreEmployeeCreateDialog extends javax.swing.JDialog {
     private void btnAceptActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAceptActionPerformed
         // TODO add your handling code here:
 
-         employeesStore = DB.getEmployeesStore(selectedStore);
+        employeesStore = DB.getEmployeesStore(selectedStore);
 
         String hoursString = txtFStock.getText();
 
@@ -180,8 +187,8 @@ public class StoreEmployeeCreateDialog extends javax.swing.JDialog {
             employee_id = Integer.valueOf(employee_idString);
             Employee selectedEmployee = DB.getEmployee(employee_id);
 
-            if (employeesStore.contains(selectedEmployee.toString())) {
-                lbError.setText("El empleado ya está asignado a la tienda.");
+            if (employeesStore.contains(selectedEmployee)) {
+                lbError.setText("El empleado ya está asignado a la tienda. Utilice \"Actualizar horas\"");
             } else {
 
                 int hours = Integer.valueOf(hoursString);

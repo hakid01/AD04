@@ -1,9 +1,11 @@
 package com.accesodatos.AD04;
 
+import com.accesodatos.AD04.entities.Item;
 import com.accesodatos.AD04.entities.ItemStore;
 import com.accesodatos.AD04.entities.Store;
 import com.accesodatos.AD04.utilities.DB;
 import java.util.ArrayList;
+import java.util.List;
 import javax.swing.DefaultListModel;
 import javax.swing.JOptionPane;
 
@@ -23,6 +25,9 @@ public class StoreManageItemsDialog extends javax.swing.JDialog {
     int nItems = 0;
 
     Store selectedStore;
+    Item selectedItem;
+    
+    List<Item> items;
     /**
      * Creates new form CustomersDialog
      *
@@ -50,9 +55,17 @@ public class StoreManageItemsDialog extends javax.swing.JDialog {
 
     public void reloadList() {
         removeElements();
-
-        addElements(DB.getItemsStore(selectedStore));
-
+        items= DB.getItemsStore(selectedStore);
+        
+        ArrayList<String> itemsWithStock = new ArrayList<>();
+        
+        items.forEach((item) -> {
+            String tempEWH = item.toString() + ". Stock: " + 
+                    DB.getItemStore(item, selectedStore).getStock();
+            itemsWithStock.add(tempEWH);
+        });
+        
+        addElements(itemsWithStock);
     }
 
     private void addElements(ArrayList<String> items) {
@@ -73,12 +86,12 @@ public class StoreManageItemsDialog extends javax.swing.JDialog {
     }
 
     private void removeSelectedElement() {
-        String selectedItem = listItemsStore.getSelectedValue();
-        if (selectedItem == null) {
+        String selectedItemString = listItemsStore.getSelectedValue();
+        if (selectedItemString == null) {
             lbError.setText("Selecciona el producto a eliminar.");
         } else {
-            String[] dataSplit = selectedItem.split(" - ");
-            System.out.println("Vamos a eliminar el producto " + selectedItem);
+            String[] dataSplit = selectedItemString.split(" - ");
+            System.out.println("Vamos a eliminar el producto " + selectedItemString);
 
             int respuesta = JOptionPane.showConfirmDialog(null, "Quiere eliminar el producto \""
                     + dataSplit[1] + "\" de esta tienda?");
@@ -86,7 +99,9 @@ public class StoreManageItemsDialog extends javax.swing.JDialog {
 
                 int idSelectedItem = Integer.valueOf(dataSplit[0]);
 
-                ItemStore selectedItemStore = DB.getItemStore(idSelectedItem,selectedStore);
+                selectedItem= DB.getItem(idSelectedItem);
+                
+                ItemStore selectedItemStore = DB.getItemStore(selectedItem,selectedStore);
                 
                 DB.transactionDeleteOfDB(selectedItemStore);
 
@@ -95,16 +110,18 @@ public class StoreManageItemsDialog extends javax.swing.JDialog {
     }
 
     private void updateStock() {
-        String selectedItem = listItemsStore.getSelectedValue();
-        if (selectedItem == null) {
+        String selectedItemString = listItemsStore.getSelectedValue();
+        if (selectedItemString == null) {
             lbError.setText("Selecciona un producto.");
         } else {
-            String[] dataSplit = selectedItem.split(" - ");
+            String[] dataSplit = selectedItemString.split(" - ");
 
             String nameSelectedItem = dataSplit[1];
             int idSelectedItem = Integer.valueOf(dataSplit[0]);
+            
+            selectedItem = DB.getItem(idSelectedItem);
 
-            StoreStockUpdateDialog ssud = new StoreStockUpdateDialog(null, true,idSelectedStore,idSelectedItem, nameSelectedItem);
+            StoreStockUpdateDialog ssud = new StoreStockUpdateDialog(null, true, selectedStore,selectedItem);
             ssud.setVisible(true);
 
         }

@@ -2,9 +2,8 @@ package com.accesodatos.AD04;
 
 import com.accesodatos.AD04.entities.Store;
 import com.accesodatos.AD04.utilities.DB;
-import java.awt.Dimension;
-import java.sql.Connection;
 import java.util.ArrayList;
+import java.util.List;
 import javax.swing.DefaultListModel;
 import javax.swing.JOptionPane;
 
@@ -22,6 +21,8 @@ public class StoresDialog extends javax.swing.JDialog {
     DefaultListModel listModel;
 
     int nStores = 0;
+    
+    List<Store> stores;
 
     /**
      * Creates new form CustomersDialog
@@ -43,7 +44,15 @@ public class StoresDialog extends javax.swing.JDialog {
 
     public void reloadList() {
         removeElements();
-        addElements(DB.getStores());
+        stores= DB.getStores();
+        
+        ArrayList<String> storesArrayList = new ArrayList<>();
+        
+        stores.forEach((store) -> {
+            storesArrayList.add(store.toString());
+        });
+        
+        addElements(storesArrayList);
     }
 
     private void addElements(ArrayList<String> stores) {

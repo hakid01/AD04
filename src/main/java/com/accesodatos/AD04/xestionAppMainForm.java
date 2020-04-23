@@ -10,9 +10,6 @@ import com.accesodatos.AD04.utilities.DB;
 import com.accesodatos.AD04.utilities.HibernateUtil;
 import com.accesodatos.AD04.entities.Provincias;
 import com.accesodatos.AD04.entities.Province;
-import com.accesodatos.AD04.entities.Customer;
-import com.accesodatos.AD04.entities.Store;
-import java.sql.Connection;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
@@ -60,7 +57,8 @@ public class xestionAppMainForm extends javax.swing.JFrame {
         btnStores = new javax.swing.JButton();
         btnItems = new javax.swing.JButton();
         btnCustomers = new javax.swing.JButton();
-        btnTitularesElPais = new javax.swing.JButton();
+        btnStockReport = new javax.swing.JButton();
+        btnTitularesElPais1 = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setResizable(false);
@@ -97,10 +95,17 @@ public class xestionAppMainForm extends javax.swing.JFrame {
             }
         });
 
-        btnTitularesElPais.setText("Leer titulares El País");
-        btnTitularesElPais.addActionListener(new java.awt.event.ActionListener() {
+        btnStockReport.setText("Crear informe stock");
+        btnStockReport.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnTitularesElPaisActionPerformed(evt);
+                btnStockReportActionPerformed(evt);
+            }
+        });
+
+        btnTitularesElPais1.setText("Leer titulares El País");
+        btnTitularesElPais1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnTitularesElPais1ActionPerformed(evt);
             }
         });
 
@@ -108,21 +113,19 @@ public class xestionAppMainForm extends javax.swing.JFrame {
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(lbTitle, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 338, Short.MAX_VALUE)
+            .addComponent(lbTitle, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addGroup(layout.createSequentialGroup()
                 .addGap(27, 27, 27)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                    .addComponent(btnEmployees, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(btnStockReport, javax.swing.GroupLayout.DEFAULT_SIZE, 160, Short.MAX_VALUE)
+                    .addComponent(btnStores, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 28, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(btnTitularesElPais, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
-                        .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
-                            .addComponent(btnEmployees, javax.swing.GroupLayout.PREFERRED_SIZE, 131, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addGap(18, 18, 18)
-                            .addComponent(btnCustomers, javax.swing.GroupLayout.PREFERRED_SIZE, 131, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                            .addComponent(btnStores, javax.swing.GroupLayout.PREFERRED_SIZE, 131, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addGap(18, 18, 18)
-                            .addComponent(btnItems, javax.swing.GroupLayout.PREFERRED_SIZE, 131, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(btnItems, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(btnTitularesElPais1, javax.swing.GroupLayout.DEFAULT_SIZE, 158, Short.MAX_VALUE)
+                    .addComponent(btnCustomers, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGap(18, 18, 18))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -135,11 +138,13 @@ public class xestionAppMainForm extends javax.swing.JFrame {
                     .addComponent(btnItems, javax.swing.GroupLayout.PREFERRED_SIZE, 49, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(btnCustomers, javax.swing.GroupLayout.PREFERRED_SIZE, 49, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(btnEmployees, javax.swing.GroupLayout.PREFERRED_SIZE, 49, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(btnEmployees, javax.swing.GroupLayout.PREFERRED_SIZE, 49, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnCustomers, javax.swing.GroupLayout.PREFERRED_SIZE, 49, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(btnTitularesElPais, javax.swing.GroupLayout.DEFAULT_SIZE, 37, Short.MAX_VALUE)
-                .addContainerGap())
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(btnStockReport, javax.swing.GroupLayout.PREFERRED_SIZE, 49, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnTitularesElPais1, javax.swing.GroupLayout.PREFERRED_SIZE, 49, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(28, Short.MAX_VALUE))
         );
 
         pack();
@@ -165,18 +170,23 @@ public class xestionAppMainForm extends javax.swing.JFrame {
 
     private void btnCustomersActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCustomersActionPerformed
         // TODO add your handling code here:
-//        this.setVisible(false);
         CustomersDialog cd = new CustomersDialog(this, true);
         cd.setVisible(true);
-//        Customer customer = new Customer("Name", "Surn", "probando@gmail.com");
-//        DB.transactionAddToDB(customer);
+
     }//GEN-LAST:event_btnCustomersActionPerformed
 
-    private void btnTitularesElPaisActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnTitularesElPaisActionPerformed
+    private void btnStockReportActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnStockReportActionPerformed
+        // TODO add your handling code here:
+        StockReport sr = new StockReport(this, true);
+        sr.setVisible(true);
+        
+    }//GEN-LAST:event_btnStockReportActionPerformed
+
+    private void btnTitularesElPais1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnTitularesElPais1ActionPerformed
         // TODO add your handling code here:
         ElPaisDialog epd = new ElPaisDialog(this, false);
         epd.setVisible(true);
-    }//GEN-LAST:event_btnTitularesElPaisActionPerformed
+    }//GEN-LAST:event_btnTitularesElPais1ActionPerformed
 
     /**
      * @param args the command line arguments
@@ -223,8 +233,9 @@ public class xestionAppMainForm extends javax.swing.JFrame {
     private javax.swing.JButton btnCustomers;
     private javax.swing.JButton btnEmployees;
     private javax.swing.JButton btnItems;
+    private javax.swing.JButton btnStockReport;
     private javax.swing.JButton btnStores;
-    private javax.swing.JButton btnTitularesElPais;
+    private javax.swing.JButton btnTitularesElPais1;
     private javax.swing.JLabel lbTitle;
     // End of variables declaration//GEN-END:variables
 
@@ -256,4 +267,5 @@ public class xestionAppMainForm extends javax.swing.JFrame {
             }
         }
     }
+    
 }
